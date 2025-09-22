@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Registrasi, Pencarian Kode Pos, dan Dropdown Dinamis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-size: 16px;
+            color: #555;
+            display: block;
+            margin: 8px 0;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0 20px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"], button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        input[type="submit"]:hover, button:hover {
+            background-color: #45a049;
+        }
+
+        .rekomendasi {
+            margin-top: 10px;
+            color: blue;
+            background-color: #e8f7ff;
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #b3d7ff;
+        }
+
+        .hasil {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f4f4f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        hr {
+            margin-top: 40px;
+            border: 1px solid #ddd;
+        }
+
+        .form-container {
+            margin-bottom: 40px;
+        }
+    </style>
+    <script>
+        // 1. Form Registrasi - Rekomendasi Nama
+        const namaRekomendasi = ['Hilman Azhar', 'Muhammad Hilman', 'Azhar Hilman', 'Muhammad Azhar', 'Muhilaz'];
+
+        function tampilkanRekomendasi() {
+            let inputNama = document.getElementById('nama').value;
+            let rekomendasiDiv = document.getElementById('rekomendasi');
+            rekomendasiDiv.innerHTML = '';
+            if (inputNama.length > 0) {
+                let filtered = namaRekomendasi.filter(nama => nama.toLowerCase().includes(inputNama.toLowerCase()));
+                filtered.forEach(nama => {
+                    let listItem = document.createElement('div');
+                    listItem.textContent = nama;
+                    rekomendasiDiv.appendChild(listItem);
+                });
+            }
+        }
+
+        const response = await fetch(`https://api.example.com/cari-kodepos?provinsi=${provinsi}&kabupaten=${kabupaten}&kecamatan=${kecamatan}`);
+        const data = await response.json();
+
+
+        // 2. Pencarian Kode Pos Indonesia
+        async function cariKodePos() {
+            let provinsi = document.getElementById('provinsi').value;
+            let kabupaten = document.getElementById('kabupaten').value;
+            let kecamatan = document.getElementById('kecamatan').value;
+            
+            // Simulasi hasil pencarian kode pos
+            let data = {
+                success: true,
+                kode_pos: "60111",
+                daerah: `${provinsi}, ${kabupaten}, ${kecamatan}`
+            };
+
+            if (data.success) {
+                document.getElementById('hasil').innerHTML = `Kode Pos: ${data.kode_pos}<br>Daerah: ${data.daerah}`;
+            } else {
+                document.getElementById('hasil').innerHTML = 'Kode pos tidak ditemukan';
+            }
+        }
+
+        // 3. Dropdown Dinamis
+        function updateMerk() {
+            let produk = document.getElementById('produk').value;
+            let merkDropdown = document.getElementById('merk');
+            merkDropdown.innerHTML = ''; // Kosongkan dropdown merk sebelumnya
+
+            let merkList = [];
+            if (produk === 'Desktop') {
+                merkList = ['HP', 'Lenovo', 'Acer'];
+            } else if (produk === 'Laptop') {
+                merkList = ['Dell', 'Asus', 'Macbook'];
+            } else if (produk === 'Smartphone') {
+                merkList = ['Samsung', 'Xiaomi', 'Oppo'];
+            }
+
+            merkList.forEach(merk => {
+                let option = document.createElement('option');
+                option.value = merk;
+                option.textContent = merk;
+                merkDropdown.appendChild(option);
+            });
+        }
+    </script>
+</head>
+<body>
+
+    <div class="container">
+
+        <h2>Form Registrasi</h2>
+        <div class="form-container">
+            <form>
+                <label for="nama">Nama Mahasiswa:</label><br>
+                <input type="text" id="nama" name="nama" oninput="tampilkanRekomendasi()" required><br>
+                <div id="rekomendasi" class="rekomendasi"></div><br>
+
+                <label for="nim">NIM:</label><br>
+                <input type="text" id="nim" name="nim" required><br><br>
+
+                <label for="mata_kuliah">Mata Kuliah:</label><br>
+                <input type="text" id="mata_kuliah" name="mata_kuliah" required><br><br>
+
+                <label for="dosen">Dosen:</label><br>
+                <input type="text" id="dosen" name="dosen" required><br><br>
+
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+
+        <hr>
+
+        <h2>Pencarian Kode Pos Indonesia</h2>
+        <label for="provinsi">Provinsi:</label><br>
+        <input type="text" id="provinsi"><br><br>
+
+        <label for="kabupaten">Kabupaten/Kota:</label><br>
+        <input type="text" id="kabupaten"><br><br>
+
+        <label for="kecamatan">Kecamatan:</label><br>
+        <input type="text" id="kecamatan"><br><br>
+
+        <button onclick="cariKodePos()">Cari Kode Pos</button>
+
+        <div id="hasil" class="hasil"></div>
+
+        <hr>
+
+        <h2>Dropdown Dinamis</h2>
+        <label for="produk">Pilih Jenis Produk:</label>
+        <select id="produk" onchange="updateMerk()">
+            <option value="">Pilih Jenis Produk</option>
+            <option value="Desktop">Desktop</option>
+            <option value="Laptop">Laptop</option>
+            <option value="Smartphone">Smartphone</option>
+        </select><br><br>
+
+        <label for="merk">Pilih Merk:</label>
+        <select id="merk">
+            <option value="">Pilih Merk</option>
+        </select>
+
+    </div>
+
+</body>
+</html>
