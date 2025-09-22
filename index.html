@@ -144,17 +144,41 @@
     </div>
 
     <script>
-        // Data untuk dropdown
+        // Data untuk dropdown dengan KODE POS 
         const dataWilayah = {
             'Jawa Timur': {
-                'Surabaya': ['Gubeng', 'Kenjeran', 'Tegalsari'],
-                'Malang': ['Blimbing', 'Klojen', 'Lowokwaru'],
-                'Sidoarjo': ['Buduran', 'Candi', 'Gedangan']
+                'Surabaya': {
+                    'Gubeng': '60281',
+                    'Kenjeran': '60121',
+                    'Tegalsari': '60261'
+                },
+                'Malang': {
+                    'Blimbing': '65126',
+                    'Klojen': '65111',
+                    'Lowokwaru': '65141'
+                },
+                'Sidoarjo': {
+                    'Buduran': '61252',
+                    'Candi': '61271',
+                    'Gedangan': '61254'
+                }
             },
             'Jawa Barat': {
-                'Bandung': ['Coblong', 'Kiaracondong', 'Cidadap'],
-                'Bekasi': ['Bekasi Barat', 'Bekasi Timur', 'Rawalumbu'],
-                'Bogor': ['Bogor Tengah', 'Bogor Utara', 'Tanah Sareal']
+                'Bandung': {
+                    'Coblong': '40132',
+                    'Kiaracondong': '40281',
+                    'Cidadap': '40141'
+                },
+                'Bekasi': {
+                    'Bekasi Barat': '17131',
+                    'Bekasi Timur': '17111',
+                    'Rawalumbu': '17116'
+                },
+                'Bogor': {
+                    'Bogor Tengah': '16125',
+                    'Bogor Utara': '16155',
+                    'Tanah Sareal': '16161'
+                }
             }
         };
 
@@ -165,7 +189,7 @@
         };
 
         // 1. Form Registrasi - Rekomendasi Nama
-        const namaRekomendasi = ['Nuris Akbar', 'Akbar Nuris', 'Nurul Akbar', 'Nur Indah', 'Nurul Hasanah'];
+        const namaRekomendasi = ['Muhammad Hilman Azhar', 'Muhammad Hilman', 'Hilman Azhar', 'Azhar Hilman', 'Muhilaz'];
 
         function tampilkanRekomendasi() {
             let inputNama = document.getElementById('nama').value;
@@ -203,6 +227,7 @@
                 return false;
             }
             alert("Form berhasil disubmit!"); // Contoh feedback
+            event.preventDefault(); 
             return true;
         }
 
@@ -214,7 +239,7 @@
             const provinsiValue = provinsiSelect.value;
 
             kabupatenSelect.innerHTML = '<option value="">Pilih Kabupaten/Kota</option>';
-            kecamatanSelect.innerHTML = '<option value="">Pilih Kecamatan</option>'; // Reset kecamatan juga
+            kecamatanSelect.innerHTML = '<option value="">Pilih Kecamatan</option>';
 
             if (provinsiValue && dataWilayah[provinsiValue]) {
                 const kabupatenList = Object.keys(dataWilayah[provinsiValue]);
@@ -237,7 +262,7 @@
             kecamatanSelect.innerHTML = '<option value="">Pilih Kecamatan</option>';
 
             if (provinsiValue && kabupatenValue && dataWilayah[provinsiValue][kabupatenValue]) {
-                const kecamatanList = dataWilayah[provinsiValue][kabupatenValue];
+                const kecamatanList = Object.keys(dataWilayah[provinsiValue][kabupatenValue]);
                 kecamatanList.forEach(namaKecamatan => {
                     let option = document.createElement('option');
                     option.value = namaKecamatan;
@@ -257,18 +282,13 @@
                 hasilDiv.innerHTML = 'Silakan lengkapi pilihan Provinsi, Kabupaten, dan Kecamatan.';
                 return;
             }
+            
+            const kodePosDitemukan = dataWilayah[provinsi][kabupaten][kecamatan];
 
-            // Simulasi hasil pencarian kode pos
-            let data = {
-                success: true,
-                kode_pos: Math.floor(60000 + Math.random() * 9000), // Kode pos acak untuk simulasi
-                daerah: `${kecamatan}, ${kabupaten}, ${provinsi}`
-            };
-
-            if (data.success) {
-                hasilDiv.innerHTML = `Kode Pos: ${data.kode_pos}<br>Daerah: ${data.daerah}`;
+            if (kodePosDitemukan) {
+                hasilDiv.innerHTML = `Kode Pos: <strong>${kodePosDitemukan}</strong><br>Daerah: ${kecamatan}, ${kabupaten}, ${provinsi}`;
             } else {
-                hasilDiv.innerHTML = 'Kode pos tidak ditemukan';
+                hasilDiv.innerHTML = 'Kode pos tidak ditemukan untuk daerah yang dipilih.';
             }
         }
 
