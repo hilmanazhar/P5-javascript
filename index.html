@@ -84,7 +84,7 @@
     </style>
     <script>
         // 1. Form Registrasi - Rekomendasi Nama
-        const namaRekomendasi = ['Hilman Azhar', 'Muhammad Hilman', 'Azhar Hilman', 'Muhammad Azhar', 'Muhilaz'];
+        const namaRekomendasi = ['Nuris Akbar', 'Akbar Nuris', 'Nurul Akbar', 'Nur Indah', 'Nurul Hasanah'];
 
         function tampilkanRekomendasi() {
             let inputNama = document.getElementById('nama').value;
@@ -100,16 +100,65 @@
             }
         }
 
-        const response = await fetch(`https://api.example.com/cari-kodepos?provinsi=${provinsi}&kabupaten=${kabupaten}&kecamatan=${kecamatan}`);
-        const data = await response.json();
+        function validateForm() {
+            let nama = document.getElementById('nama').value;
+            let nim = document.getElementById('nim').value;
+            let mataKuliah = document.getElementById('mata_kuliah').value;
+            let dosen = document.getElementById('dosen').value;
 
+            if (!nama || !nim || !mataKuliah || !dosen) {
+                alert("Semua field harus diisi!");
+                return false;
+            }
+            return true;
+        }
 
         // 2. Pencarian Kode Pos Indonesia
+        function updateKota() {
+            let provinsi = document.getElementById('provinsi').value;
+            let kabupaten = document.getElementById('kabupaten');
+            kabupaten.innerHTML = ''; // Kosongkan kota sebelumnya
+
+            let kabupatenList = [];
+            if (provinsi === 'Jawa Timur') {
+                kabupatenList = ['Surabaya', 'Malang', 'Sidoarjo'];
+            } else if (provinsi === 'Jawa Barat') {
+                kabupatenList = ['Bandung', 'Bekasi', 'Bogor'];
+            }
+
+            kabupatenList.forEach(kabupaten => {
+                let option = document.createElement('option');
+                option.value = kabupaten;
+                option.textContent = kabupaten;
+                kabupaten.appendChild(option);
+            });
+        }
+
+        function updateKecamatan() {
+            let kabupaten = document.getElementById('kabupaten').value;
+            let kecamatan = document.getElementById('kecamatan');
+            kecamatan.innerHTML = ''; // Kosongkan kecamatan sebelumnya
+
+            let kecamatanList = [];
+            if (kabupaten === 'Surabaya') {
+                kecamatanList = ['Gubeng', 'Kenjeran', 'Tegalsari'];
+            } else if (kabupaten === 'Bandung') {
+                kecamatanList = ['Coblong', 'Kiaracondong', 'Cidadap'];
+            }
+
+            kecamatanList.forEach(kecamatan => {
+                let option = document.createElement('option');
+                option.value = kecamatan;
+                option.textContent = kecamatan;
+                kecamatan.appendChild(option);
+            });
+        }
+
         async function cariKodePos() {
             let provinsi = document.getElementById('provinsi').value;
             let kabupaten = document.getElementById('kabupaten').value;
             let kecamatan = document.getElementById('kecamatan').value;
-            
+
             // Simulasi hasil pencarian kode pos
             let data = {
                 success: true,
@@ -154,7 +203,7 @@
 
         <h2>Form Registrasi</h2>
         <div class="form-container">
-            <form>
+            <form onsubmit="return validateForm()">
                 <label for="nama">Nama Mahasiswa:</label><br>
                 <input type="text" id="nama" name="nama" oninput="tampilkanRekomendasi()" required><br>
                 <div id="rekomendasi" class="rekomendasi"></div><br>
@@ -176,13 +225,21 @@
 
         <h2>Pencarian Kode Pos Indonesia</h2>
         <label for="provinsi">Provinsi:</label><br>
-        <input type="text" id="provinsi"><br><br>
+        <select id="provinsi" onchange="updateKota()">
+            <option value="">Pilih Provinsi</option>
+            <option value="Jawa Timur">Jawa Timur</option>
+            <option value="Jawa Barat">Jawa Barat</option>
+        </select><br><br>
 
         <label for="kabupaten">Kabupaten/Kota:</label><br>
-        <input type="text" id="kabupaten"><br><br>
+        <select id="kabupaten" onchange="updateKecamatan()">
+            <option value="">Pilih Kabupaten/Kota</option>
+        </select><br><br>
 
         <label for="kecamatan">Kecamatan:</label><br>
-        <input type="text" id="kecamatan"><br><br>
+        <select id="kecamatan">
+            <option value="">Pilih Kecamatan</option>
+        </select><br><br>
 
         <button onclick="cariKodePos()">Cari Kode Pos</button>
 
